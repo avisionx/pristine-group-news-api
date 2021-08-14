@@ -24,18 +24,28 @@ r = requests.get(URL)
 soup = BeautifulSoup(r.content, 'html5lib')
 dataItems = soup.find_all('li', {'data-recent-story': True})
 
+now = datetime.datetime.now()
+date = {key: val for key, val in zip(['d', 'm', 'Y'], now.strftime('%d/%m/%Y').split("/"))}
+time = {key: val for key, val in zip(['H', 'M', 'S'], now.strftime('%H:%M:%S').split(":"))}
+
 newsDump = []
 for news in dataItems:
     newsDump.append(getNewsJson(news))
 
 with open('news.json', 'w') as outfile:
-    now = datetime.datetime.now()
-    date = {key: val for key, val in zip(['d', 'm', 'Y'], now.strftime('%d/%m/%Y').split("/"))}
-    time = {key: val for key, val in zip(['H', 'M', 'S'], now.strftime('%H:%M:%S').split(":"))}
     json.dump({
         'updated_at': {
             'date': date,
             'time': time
         },
         'news': newsDump
+    }, outfile)
+    
+with open('news-top.json', 'w') as outfile:
+    json.dump({
+        'updated_at': {
+            'date': date,
+            'time': time
+        },
+        'news': newsDump[:3]
     }, outfile)
