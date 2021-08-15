@@ -14,7 +14,8 @@ def getNewsJson(data):
         'para': data.p.text,
         'href': data.a['href'],
         'img': 'data:image/png;base64, ' + base64.b64encode(requests.get(data.img['data-src']).content).decode('utf-8'),
-        'img-src': data.img['data-src']
+        'img-src': data.img['data-src'],
+        'tag': data.span.text.title()
     }
 
 
