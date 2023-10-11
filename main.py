@@ -20,7 +20,7 @@ def getNewsJson(data):
         "img": "data:image/png;base64, "
         + base64.b64encode(requests.get(data.img["data-src"]).content).decode("utf-8"),
         "img-src": data.img["data-src"],
-        # 'tag': data.span.text.title()
+        "tag": data.a["href"].split("/")[2],
     }
 
 
@@ -38,7 +38,13 @@ time = {
 
 newsDump = []
 for news in dataItems:
-    newsDump.append(getNewsJson(news))
+    try:
+        newsDump.append(getNewsJson(news))
+    except:
+        pass
+
+if len(newsDump) < 3:
+    raise Exception("Failed to load enough data for pristine group news api!")
 
 with open("news.json", "w") as outfile:
     json.dump({"updated_at": {"date": date, "time": time}, "news": newsDump}, outfile)
