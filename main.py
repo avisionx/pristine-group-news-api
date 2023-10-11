@@ -10,12 +10,12 @@ import datetime
 
 def getNewsJson(data):
     return {
-        'title': data.h3.a.text,
+        'title': data.h3.text,
         'para': data.p.text,
         'href': data.a['href'],
         'img': 'data:image/png;base64, ' + base64.b64encode(requests.get(data.img['data-src']).content).decode('utf-8'),
         'img-src': data.img['data-src'],
-        'tag': data.span.text.title()
+        # 'tag': data.span.text.title()
     }
 
 
@@ -23,7 +23,7 @@ URL = 'https://realty.economictimes.indiatimes.com/latest-news'
 
 r = requests.get(URL)
 soup = BeautifulSoup(r.content, 'html5lib')
-dataItems = soup.find_all('li', {'data-recent-story': True})
+dataItems = soup.find_all('article', {'class': 'desc'})
 
 now = datetime.datetime.now()
 date = {key: val for key, val in zip(['d', 'm', 'Y'], now.strftime('%d/%m/%Y').split("/"))}
